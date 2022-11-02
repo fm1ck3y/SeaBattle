@@ -15,6 +15,16 @@ class Client():
         if response["status"] == "ok":
             print(f"Connection {self.ip}:{self.port} success")
 
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        print("\nExecution type:", exc_type)
+        print("\nExecution value:", exc_value)
+        print("\nTraceback:", traceback)
+        self.__del__()
+
     def __send_data(self, data):
         try:
             return self.sock.send(

@@ -1,5 +1,7 @@
 from SeaBattleModels import SeaBoard
 from SocketNetwork import Client
+import config
+import time
 
 class ClientSeaBattle(Client):
     def __init__(self, ip, port, username, size_board, max_count_ship):
@@ -18,4 +20,17 @@ class ClientSeaBattle(Client):
         if response["status"] == "ok":
             return True
 
+        return False
+
+    def wait_opponent(self, type):
+        for counter,_ in enumerate(range(config.MAX_COUNT_WAIT_APPONENT)):
+            print(f"[{counter}/{config.MAX_COUNT_WAIT_APPONENT}] Try again after {config.EVERY_SECOND_WAIT_APPONENT} second.")
+            response = self.send_data_with_response({
+                "command" : f"wait_opponent_{type}"
+            })
+            if response[f"opponent_{type}"]:
+                return True
+            if response[f"opponent_{type}"] is None:
+                return False
+            time.sleep(config.EVERY_SECOND_WAIT_APPONENT)
         return False

@@ -1,4 +1,5 @@
 from typing import List
+import json
 
 class Ship():
     def __init__(self, cords : tuple, shot_cords : List[tuple] = []):
@@ -38,3 +39,6 @@ class Ship():
                 if _x == x and _y == y:
                     return True
         return False
+
+    def serialize(self):
+        return json.dumps(self.__dict__,default=lambda o: o.__dict__)

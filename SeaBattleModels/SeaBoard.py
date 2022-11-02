@@ -1,19 +1,19 @@
 from typing import List
 import json
+import copy
 from .Ship import Ship
-
-EMPTY_CHAR = "-"
-LIVE_SHIP_CHAR = "*"
-DEAD_SHIP_CHAR = "X"
+from config import EMPTY_CHAR, LIVE_SHIP_CHAR, DEAD_SHIP_CHAR
 
 class SeaBoard():
-    def __init__(self, size : int = 10, max_count_ship = 6, ships : List[Ship] = [] ):
+    def __init__(self, size : int = 10, max_count_ship = 6,
+            ships : List[Ship] = [], shots_cords = List[tuple]):
         self.size = size
         self.ships = ships
         self.max_count_ship = max_count_ship
+        self.shots_cords = shots_cords
 
     def count_ship_is_live(self):
-        return sum([not x.is_dead for x in self.ships])
+        return sum(self.get_lives_ship())
 
     def add_ship(self, ship):
         if self.max_count_ship <= len(self.ships):
@@ -29,6 +29,9 @@ class SeaBoard():
                 return True
         return False
 
+    def get_lives_ship(self):
+        return [not x.is_dead for x in self.ships]
+
     def can_add_ship(self, new_ship) -> bool:
         for _ship in self.ships:
             if Ship.ship_crossing(_ship, new_ship):
@@ -42,14 +45,22 @@ class SeaBoard():
                 board[x][y] = LIVE_SHIP_CHAR
             for x,y in ship.shot_cords:
                 board[x][y] = DEAD_SHIP_CHAR
+            for x,y in self.shots_cords:
+                board[x][y] = DEAD_SHIP_CHAR
         return board
 
     @staticmethod
     def deserialize(data):
         return SeaBoard(**json.loads(data))
 
-    def serialize(self):
-        return json.dumps(self.__dict__,default=lambda o: o.__dict__)
+    def serialize(self, hide_ships = False):
+        if hide_ships:
+            _self = copy.copy(self)
+            for _ship in list(_self.get_lives_ship()):
+                _self.ships.remove(_ship)
+            return json.dumps(_self.__dict__, default=lambda o: o.serialize())
+        else:
+            return json.dumps(self.__dict__, default=lambda o: o.serialize())
 
     def __str__(self):
         _str = ""
