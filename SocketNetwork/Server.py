@@ -33,7 +33,7 @@ class Server:
                 self.data_connection[addr]['thread'] = _thread
                 _thread.start()
             except KeyboardInterrupt:
-                sys.exit(1)
+                break
 
     def handler_conn(self, addr):
         while True:
@@ -77,6 +77,14 @@ class Server:
         print(data, addr)
         return data
 
+    def close_connections(self):
+        for addr, conn in self.connections:
+            print(f"Connection abort: {addr[0]}:{addr[1]}")
+            conn.close()
+            self.connections.pop(addr)
+            self.data_connection.pop(addr)
+
     def __del__(self):
         print(f"Connection close: {self.ip}:{self.port}")
+        self.close_connections()
         self.sock.close()

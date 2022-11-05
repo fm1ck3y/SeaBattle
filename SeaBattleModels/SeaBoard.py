@@ -58,9 +58,9 @@ class SeaBoard():
             _self = copy.copy(self)
             for _ship in list(_self.get_lives_ship()):
                 _self.ships.remove(_ship)
-            return json.dumps(_self.__dict__, default=lambda o: o.serialize())
+            return json.dumps(_self.__dict__, default=lambda o: o.__dict__)
         else:
-            return json.dumps(self.__dict__, default=lambda o: o.serialize())
+            return json.dumps(self.__dict__, default=lambda o: o.__dict__)
 
     def __str__(self):
         _str = ""

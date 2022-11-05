@@ -22,6 +22,8 @@ class Ship():
 
     @staticmethod
     def validate_cords(cords):
+        if len(cords) < 1:
+            return True
         for i in range(len(cords) - 1):
             if abs(cords[i][0] - cords[i+1][0]) > 1:
                 return False

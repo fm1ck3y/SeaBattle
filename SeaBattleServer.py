@@ -1,6 +1,7 @@
 
 from SocketNetwork import Server
 from SeaBattleModels import SeaBoard
+import sys
 
 class SeaBattleServer(Server):
     def __init__(self, ip = "127.0.0.1", port = 1000, max_connections=2):
@@ -15,6 +16,7 @@ class SeaBattleServer(Server):
         elif data['command'] == "init_board":
             if addr not in self.boards:
                 self.boards[addr] = SeaBoard.deserialize(data['sea_board'])
+                self.data_connection[addr]['my_turn'] = False
                 print(f"Board init for {addr}")
 
             elif hash(self.boards[addr]) != data['board_hash']:
@@ -32,6 +34,13 @@ class SeaBattleServer(Server):
                         return {"opponent_found" : self.data_connection[_addr]['found'], "status" : "ok"}
             return {"opponent_found" : False, "status" : "ok"}
         
+        elif data['command'] == 'wait_opponent_turn':
+            if len(self.data_connection.keys()) > 1:
+                for _addr in self.data_connection.keys():
+                    if 'turn' in self.data_connection[_addr]:
+                        return {"is_my_turn" : self.data_connection[_addr]['my_turn'], "status" : "ok"}
+            return {"is_my_turn" : None, "status" : "ok"}
+
         elif data['command'] == "wait_opponent_ready":
             _addr_opponent = self.data_connection[addr]['opponent']
             if not _addr_opponent in self.data_connection:
@@ -43,4 +52,9 @@ class SeaBattleServer(Server):
         return {"status" : "ok"}
 
 if __name__ == "__main__":
-    SeaBattleServer().accept()
+    try:
+        server = SeaBattleServer()
+        server.accept()
+    except KeyboardInterrupt:
+        server.close_connections()
+        exit(1)
