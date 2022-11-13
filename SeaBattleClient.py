@@ -7,6 +7,14 @@ class ClientSeaBattle(Client):
     def __init__(self, ip, port, username, size_board, max_count_ship):
         super().__init__(ip,port,username)
         self.sea_board = SeaBoard(size_board,max_count_ship)
+
+        # TEST
+        from SeaBattleModels import Ship
+        self.sea_board.add_ship(Ship([(0,1),(0,2),(0,3)]))
+        self.sea_board.add_ship(Ship([(0,0)]))
+        self.sea_board.add_ship(Ship([(4,3),(4,2),(4,1)]))
+        ###
+
         self.opponent_sea_board = None
 
     def init_board(self):
@@ -31,20 +39,8 @@ class ClientSeaBattle(Client):
             })
             if response[f"opponent_{type}"]:
                 return True
-            if response[f"opponent_{type}"] is None:
-                return False
             time.sleep(config.EVERY_SECOND_WAIT_APPONENT)
         return False
-
-    def is_my_turn(self) -> bool:
-        try:
-            response = self.send_data_with_response({
-                "command" : "is_my_turn"
-            })
-            if response['your_turn']:
-                return True
-            return False
-        except: return False
 
     def update_opponent_board(self):
         response = self.send_data_with_response({

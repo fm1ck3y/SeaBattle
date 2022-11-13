@@ -1,7 +1,6 @@
 import socket
 import threading
 import json
-import sys
 
 class Server:
     def __init__(self, ip = "127.0.0.1", port = 1000, max_connections=2, handler_func = None):

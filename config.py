@@ -1,5 +1,8 @@
 import sys
 
+DEFAULT_HOST = '127.0.0.1'
+DEFAULT_PORT = 10001
+
 EMPTY_CHAR = "-"
 LIVE_SHIP_CHAR = "*"
 DEAD_SHIP_CHAR = "X"

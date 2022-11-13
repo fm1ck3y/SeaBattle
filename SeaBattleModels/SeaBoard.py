@@ -6,7 +6,7 @@ from config import EMPTY_CHAR, LIVE_SHIP_CHAR, DEAD_SHIP_CHAR
 
 class SeaBoard():
     def __init__(self, size : int = 10, max_count_ship = 6,
-            ships : List[Ship] = [], shots_cords = List[tuple]):
+            ships : List[Ship] = [], shots_cords : List[tuple] = []):
         self.size = size
         self.ships = ships
         self.max_count_ship = max_count_ship
@@ -55,7 +55,7 @@ class SeaBoard():
 
     def serialize(self, hide_ships = False):
         if hide_ships:
-            _self = copy.copy(self)
+            _self = copy.deepcopy(self)
             for _ship in list(_self.get_lives_ship()):
                 _self.ships.remove(_ship)
             return json.dumps(_self.__dict__, default=lambda o: o.__dict__)
