@@ -33,7 +33,7 @@ class SeaBattleServer(Server):
         elif data['command'] == "wait_opponent_found":
             if len(self.data_connection.keys()) > 1:
                 for _addr in self.data_connection.keys():
-                    if 'found' in self.data_connection[_addr]:
+                    if 'found' in self.data_connection[_addr] and _addr != addr:
                         if self.data_connection[_addr]['found']:
                             self.data_connection[addr]['opponent'] = _addr
                             self.data_connection[addr]['ready'] = False
@@ -62,6 +62,18 @@ class SeaBattleServer(Server):
                 return {"status" : "opponent exit"}
             _addr_opponent = self.data_connection[addr]['opponent']
             return {"sea_board": self.boards[_addr_opponent].serialize(hide_ships=True), "status" : "ok"}
+
+        elif data['command'] == 'shoot':
+            if not self.data_connection[addr]['my_turn']:
+                return {"status" : "not your queue"}
+            if 'opponent' not in self.data_connection[addr]:
+                return {"status" : "opponent exit"}
+            _addr_opponent = self.data_connection[addr]['opponent']
+            hit = self.boards[_addr_opponent].try_shot((data['x'], data['y']))
+            if not hit:
+                self.data_connection[addr]['my_turn'] = not self.data_connection[addr]['my_turn']
+                self.data_connection[_addr_opponent]['my_turn'] = not self.data_connection[_addr_opponent]['my_turn']
+            return {"status" : "ok", 'hit': hit}
 
         return {"status" : "ok"}
 

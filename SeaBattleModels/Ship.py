@@ -4,7 +4,11 @@ import json
 class Ship():
     def __init__(self, cords : List[tuple], shot_cords : List[tuple] = []):
         self.cords = cords
+        if len(cords) > 0 and isinstance(cords, list):
+            self.cords = [(x[0],x[1]) for x in cords]
         self.shot_cords = shot_cords
+        if len(shot_cords) > 0 and isinstance(shot_cords, list):
+            self.shot_cords = [(x[0],x[1]) for x in shot_cords]
 
     @property
     def is_dead(self):

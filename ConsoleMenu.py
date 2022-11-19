@@ -63,20 +63,26 @@ class ConsoleMenu:
             exit(1)
 
     def try_shot(self):
-        input()
+        print("Shoooot him!")
+        x,y = map(int, input("Enter cords x,y (example 1,1): ").split(','))
+        if x+1 > self.client.sea_board.size or y+1 > self.client.sea_board.size:
+            print("Your enter invalid cords for this ship.")
+            return self.try_shot()
+        return self.client.shoot_opponent(x,y)
 
     def print_sea_boards(self):
-        my_sea_board_str = str(self.client.sea_board)
-        opponent_sea_board_str = str(self.client.opponent_sea_board)        
+        my_sea_board_str_list = str(self.client.sea_board).split('\n')
+        opponent_sea_board_str_list = str(self.client.opponent_sea_board).split('\n')
         print("-"*5, "BOARD", "-"*5)
-        for line_1 , line_2 in my_sea_board_str.split('\n'), opponent_sea_board_str.split('\n'):
-            print(line_1, "\t\t", line_2)
+        for i in range(len(my_sea_board_str_list)):
+            print(my_sea_board_str_list[i], "\t\t", opponent_sea_board_str_list[i])
 
     def progress_game(self):
         while True:
             self.client.wait_opponent(type="turn")
             os.system(config.CLEAR_COMMAND)
             self.client.update_opponent_board()
-            self.print_sea_boards(self.client)
-            self.try_shot(self.client)
+            self.client.wait_opponent(type="turn")
+            self.print_sea_boards()
+            self.try_shot()
         print("Game is end.")

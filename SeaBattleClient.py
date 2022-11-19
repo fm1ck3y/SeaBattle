@@ -48,3 +48,12 @@ class ClientSeaBattle(Client):
         })
         self.opponent_sea_board = SeaBoard.deserialize(response['sea_board'])
         return self.opponent_sea_board
+
+    def shoot_opponent(self, x, y):
+        response = self.send_data_with_response({
+            "command" : "shoot", "x" : x, "y" : y
+        })
+        if response["status"] != "ok":
+            return False
+        self.opponent_sea_board.try_shot((x,y))
+        return response['hit']
