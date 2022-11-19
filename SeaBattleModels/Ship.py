@@ -6,7 +6,6 @@ class Ship():
         self.cords = cords
         self.shot_cords = shot_cords
 
-    # TODO: not exists when we copy object Ship
     @property
     def is_dead(self):
         if len(self.shot_cords) == len(self.cords):
@@ -48,3 +47,7 @@ class Ship():
 
     def serialize(self):
         return json.dumps(self.__dict__,default=lambda o: o.__dict__)
+
+    @staticmethod
+    def deserialize(data):
+        return Ship(**data)

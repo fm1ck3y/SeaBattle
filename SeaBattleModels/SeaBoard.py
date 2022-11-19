@@ -9,6 +9,8 @@ class SeaBoard():
             ships : List[Ship] = [], shots_cords : List[tuple] = []):
         self.size = size
         self.ships = ships
+        if len(ships) > 0 and isinstance(ships[0], dict):
+            self.ships = [Ship.deserialize(x) for x in ships]
         self.max_count_ship = max_count_ship
         self.shots_cords = shots_cords
 
@@ -30,7 +32,9 @@ class SeaBoard():
         return False
 
     def get_lives_ship(self):
-        return [not x.is_dead for x in self.ships]
+        for x in self.ships:
+            if not x.is_dead:
+                yield x
 
     def can_add_ship(self, new_ship) -> bool:
         for _ship in self.ships:
