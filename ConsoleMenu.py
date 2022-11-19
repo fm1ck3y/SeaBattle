@@ -1,5 +1,4 @@
 from SeaBattleModels import Ship
-from SeaBattleModels import SeaBoard
 import os
 import config
 

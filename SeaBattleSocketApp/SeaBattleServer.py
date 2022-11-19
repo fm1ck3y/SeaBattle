@@ -79,11 +79,3 @@ class SeaBattleServer(Server):
             return {"status" : "ok", 'hit': hit}
 
         return {"status" : "ok"}
-
-if __name__ == "__main__":
-    try:
-        server = SeaBattleServer()
-        server.accept()
-    except KeyboardInterrupt:
-        server.close_connections()
-        exit(1)
