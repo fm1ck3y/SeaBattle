@@ -49,6 +49,13 @@ class ClientSeaBattle(Client):
         self.opponent_sea_board = SeaBoard.deserialize(response['sea_board'])
         return self.opponent_sea_board
 
+    def update_my_board(self):
+        response = self.send_data_with_response({
+            "command" : "get_my_board"
+        })
+        self.sea_board = SeaBoard.deserialize(response['sea_board'])
+        return self.sea_board
+
     def shoot_opponent(self, x, y):
         response = self.send_data_with_response({
             "command" : "shoot", "x" : x, "y" : y

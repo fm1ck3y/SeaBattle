@@ -63,6 +63,9 @@ class SeaBattleServer(Server):
             _addr_opponent = self.data_connection[addr]['opponent']
             return {"sea_board": self.boards[_addr_opponent].serialize(hide_ships=True), "status" : "ok"}
 
+        elif data['command'] == 'get_my_board':
+            return {"sea_board": self.boards[addr].serialize(), "status" : "ok"}
+
         elif data['command'] == 'shoot':
             if not self.data_connection[addr]['my_turn']:
                 return {"status" : "not your queue"}
