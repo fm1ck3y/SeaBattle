@@ -7,13 +7,13 @@ The main idea of the implementation: to build a game based on sockets.
 ## Start Server Application
 
 ```bash
-python3 --host 127.0.0.1 --port 11000 --server
+python3 main.py --host 127.0.0.1 --port 11000 --server
 ``` 
 
 ## Start Client Application
 
 ```bash
-python3 --host 127.0.0.1 --port 11000 --client
+python3 main.py --host 127.0.0.1 --port 11000 --client
 ``` 
 
 ## Ideas and bugs
