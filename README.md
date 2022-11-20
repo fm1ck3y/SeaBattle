@@ -18,9 +18,6 @@ python3 main.py --host 127.0.0.1 --port 11000 --client
 
 ## Ideas and bugs
 
-### Not completed
-- Notification about game ended
-
 ### Bugs
 - In rare cases opponent_addr = user_addr
 - I think application have problem with sync threads in server mode

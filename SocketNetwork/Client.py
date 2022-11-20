@@ -20,9 +20,12 @@ class Client():
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        print("\nExecution type:", exc_type)
-        print("\nExecution value:", exc_value)
-        print("\nTraceback:", traceback)
+        if exc_type is not None:
+            print("\nExecution type:", exc_type)
+        if exc_value is not None:
+            print("\nExecution value:", exc_value)
+        if traceback is not None:
+            print("\nTraceback:", traceback)
         self.__del__()
 
     def __send_data(self, data):

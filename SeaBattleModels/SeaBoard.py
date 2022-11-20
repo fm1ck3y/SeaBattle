@@ -24,7 +24,10 @@ class SeaBoard():
             self.missed_cords = [(x[0],x[1]) for x in missed_cords]
 
     def count_ship_is_live(self):
-        return sum(self.get_lives_ship())
+        return len(list(self.get_lives_ship()))
+
+    def game_is_lost(self):
+        return self.count_ship_is_live() == 0
 
     def add_ship(self, ship):
         if self.max_count_ship <= len(self.ships):

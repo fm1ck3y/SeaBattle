@@ -19,6 +19,8 @@ class ClientSeaBattle(Client):
             self.sea_board = SeaBoard.deserialize(response['sea_board'])
 
         if response["status"] == "ok":
+            self.game_end = False
+            self.opponent_lost = False
             return True
 
         return False
@@ -29,6 +31,10 @@ class ClientSeaBattle(Client):
             response = self.send_data_with_response({
                 "command" : f"wait_opponent_{type}"
             })
+            if f"opponent_{type}" == "opponent_turn":
+                self.game_end = response['game_end']
+                self.opponent_lost = response['opponent_lost']
+                if self.game_end: return True
             if response[f"opponent_{type}"]:
                 return True
             time.sleep(config.EVERY_SECOND_WAIT_APPONENT)
