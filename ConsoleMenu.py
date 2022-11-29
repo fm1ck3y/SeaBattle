@@ -80,6 +80,7 @@ class ConsoleMenu:
             print(my_sea_board_str_list[i], "\t\t", opponent_sea_board_str_list[i])
 
     def check_game_end(self):
+        self.client.check_on_game_end()
         if self.client.game_end and self.client.opponent_lost:
             print("Game end. Your win!\n")
             return True
@@ -89,15 +90,7 @@ class ConsoleMenu:
         return False
 
     def progress_game(self):
-        self.client.wait_opponent(type="turn")
         while True:
-            os.system(config.CLEAR_COMMAND)
-            self.client.update_opponent_board()
-            self.client.update_my_board()
-            self.print_sea_boards()
-            if self.check_game_end(): break
-            
-            self.client.wait_opponent(type="turn")
             os.system(config.CLEAR_COMMAND)
             self.client.update_opponent_board()
             self.client.update_my_board()

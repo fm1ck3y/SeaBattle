@@ -62,3 +62,13 @@ class ClientSeaBattle(Client):
             return False
         self.opponent_sea_board.try_shot((x,y))
         return response['hit']
+
+    def check_on_game_end(self):
+        response = self.send_data_with_response({
+            "command" : f"check_on_game_end"
+        })
+        self.game_end = response['game_end']
+        self.opponent_lost = response['opponent_lost']
+        if self.game_end:
+            return True
+        return False

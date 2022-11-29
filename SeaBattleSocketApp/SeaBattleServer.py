@@ -16,8 +16,8 @@ class SeaBattleServer(Server):
             return self.init_board(data,addr)
         elif data['command'] == "wait_opponent_found":
             return self.wait_opponent_found(data,addr)
-        elif data['command'] == 'wait_opponent_turn':
-            return self.wait_opponent_turn(data,addr)
+        elif data['command'] == 'check_on_game_end':
+            return self.check_on_game_end(data,addr)
         elif data['command'] == "wait_opponent_ready":
             return self.wait_opponent_ready(data, addr)
         elif data['command'] == 'get_opponent_board':
@@ -51,7 +51,6 @@ class SeaBattleServer(Server):
             self.data_connection[random.choice([addr,_addr_opponent])]['my_turn'] = True
         return {"status" : "ok"}
 
-
     def wait_opponent_found(self, data, addr):
         if len(self.data_connection.keys()) > 1:
             for _addr in self.data_connection.keys():
@@ -63,21 +62,18 @@ class SeaBattleServer(Server):
                     return {"opponent_found" : self.data_connection[_addr]['found'], "status" : "ok"}
         return {"opponent_found" : False, "status" : "ok"}
 
-    def wait_opponent_turn(self, data, addr):
+    def check_on_game_end(self, data, addr):
         if 'opponent' not in self.data_connection[addr]:
             return {"status" : "opponent exit"}
         _addr_opponent = self.data_connection[addr]['opponent']
         user_lost = self.boards[addr].game_is_lost()
         opponent_lost = self.boards[_addr_opponent].game_is_lost()
-        response = {"opponent_turn" : None, "status" : "ok",'opponent_lost' : False,'game_end': False}
-        if 'my_turn' in self.data_connection[addr]:
-            response = {
-                    "opponent_turn" : self.data_connection[addr]['my_turn'],
-                    "status" : "ok",
-                    'opponent_lost' : opponent_lost,
-                    'game_end': user_lost or opponent_lost
-                   }
-        return response
+        return {
+            "opponent_turn" : None,
+            "status" : "ok",
+            "opponent_lost" : opponent_lost,
+            "game_end": user_lost or opponent_lost
+        }
 
     def wait_opponent_ready(self, data, addr):
         if 'opponent' not in self.data_connection[addr]:
@@ -96,13 +92,8 @@ class SeaBattleServer(Server):
         return {"sea_board": self.boards[_addr_opponent].serialize(hide_ships=True), "status" : "ok"}
 
     def shoot(self, data, addr):
-        if not self.data_connection[addr]['my_turn']:
-            return {"status" : "not your queue"}
         if 'opponent' not in self.data_connection[addr]:
             return {"status" : "opponent exit"}
         _addr_opponent = self.data_connection[addr]['opponent']
         hit = self.boards[_addr_opponent].try_shot((data['x'], data['y']))
-        if not hit:
-            self.data_connection[addr]['my_turn'] = not self.data_connection[addr]['my_turn']
-            self.data_connection[_addr_opponent]['my_turn'] = not self.data_connection[_addr_opponent]['my_turn']
         return {"status" : "ok", 'hit': hit}
